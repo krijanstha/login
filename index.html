@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premium Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="login.js"></script>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="hero-panel">
+      <div class="hero-copy">
+        <span class="eyebrow">Secure access</span>
+        <h1>Welcome Back</h1>
+        <p>Sign in to continue to your dashboard and unlock your premium workspace.</p>
+      </div>
+      <div class="shadow-card"></div>
+    </div>
+
+    <section class="login-card">
+      <div class="brand-mark">
+        <div class="brand-icon">A</div>
+        <div>
+          <p class="brand-name">Aurelia</p>
+          <p class="brand-subtitle">Premium experience</p>
+        </div>
+      </div>
+
+      <form class="login-form">
+        <h2 class="form-title">Sign in to your account</h2>
+        <div class="input-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="you@example.com" required />
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </div>
+        <div class="form-meta">
+          <label class="checkbox-label">
+            <input type="checkbox" /> Remember me
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-primary">Sign In</button>
+        <p class="mode-toggle">New here? <button type="button" class="toggle-mode">Create account</button></p>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

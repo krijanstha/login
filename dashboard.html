@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: Inter, system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #08101e);
+      color: #ffffff;
+      text-align: center;
+      padding: 24px;
+    }
+    .dashboard-card {
+      max-width: 520px;
+      width: 100%;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      padding: 44px 36px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    }
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(2rem, 3vw, 3rem);
+      letter-spacing: -0.06em;
+    }
+    p {
+      margin: 0 0 28px;
+      color: #a6b8db;
+      line-height: 1.8;
+    }
+    .btn-return {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 54px;
+      padding: 0 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(247, 201, 72, 0.16);
+      color: #f8f6e8;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .btn-return:hover {
+      transform: translateY(-2px);
+      background: rgba(247, 201, 72, 0.24);
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-card">
+    <h1>Welcome to your premium space</h1>
+    <p>Your login was successful. This is a simple landing page after authentication.</p>
+    <a class="btn-return" href="index.html">Return to login</a>
+  </div>
+</body>
+</html>
