@@ -13,6 +13,12 @@ services:
     ports:
       - '5433:5432'
 
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+
   backend:
     build:
       context: ./backend
@@ -20,12 +26,15 @@ services:
     restart: always
     depends_on:
       - db
+      - redis
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       POSTGRES_DB: appdb
       POSTGRES_USER: appuser
       POSTGRES_PASSWORD: appsecret
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       PORT: 4000
     ports:
       - '4001:4000'

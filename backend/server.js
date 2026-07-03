@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
+const { createClient } = require('redis');
 const path = require('path');
 const dotenv = require('dotenv');
 
@@ -18,6 +19,27 @@ const pool = new Pool({
   password: process.env.POSTGRES_PASSWORD || 'appsecret',
   database: process.env.POSTGRES_DB || 'appdb',
 });
+
+const redisClient = createClient({
+  url:
+    process.env.REDIS_URL ||
+    `redis://${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || 6379}`,
+});
+
+redisClient.on('error', (err) => console.error('Redis error:', err));
+
+const getCachedUser = async (email) => {
+  const cached = await redisClient.get(`user:${email}`);
+  return cached ? JSON.parse(cached) : null;
+};
+
+const setCachedUser = async (user) => {
+  await redisClient.setEx(`user:${user.email}`, 300, JSON.stringify(user));
+};
+
+const deleteCachedUser = async (email) => {
+  await redisClient.del(`user:${email}`);
+};
 
 const initializeDatabase = async () => {
   try {
@@ -42,12 +64,17 @@ app.post('/api/login', async (req, res) => {
     return res.status(400).json({ message: 'Email and password are required.' });
   }
   try {
-    const result = await pool.query('SELECT id, email, password_hash FROM users WHERE email = $1', [email]);
-    if (result.rows.length === 0) {
-      return res.status(401).json({ message: 'Invalid credentials.' });
+    let user = await getCachedUser(email);
+    if (!user) {
+      const result = await pool.query('SELECT id, email, password_hash FROM users WHERE email = $1', [email]);
+      if (result.rows.length === 0) {
+        return res.status(401).json({ message: 'Invalid credentials.' });
+      }
+
+      user = result.rows[0];
+      await setCachedUser(user);
     }
 
-    const user = result.rows[0];
     const validPassword = await bcrypt.compare(password, user.password_hash);
     if (!validPassword) {
       return res.status(401).json({ message: 'Invalid credentials.' });
@@ -77,6 +104,9 @@ app.post('/api/register', async (req, res) => {
       [email, passwordHash]
     );
 
+    const newUser = { id: insert.rows[0].id, email, password_hash: passwordHash };
+    await setCachedUser(newUser);
+
     return res.status(201).json({ message: 'Account created', user: insert.rows[0] });
   } catch (error) {
     console.error('Register error:', error);
@@ -91,10 +121,25 @@ app.get('/', (req, res) => {
 });
 
 const port = process.env.PORT || 4000;
-initializeDatabase().then(() => {
+
+const initializeRedis = async () => {
+  try {
+    await redisClient.connect();
+    console.log('Connected to Redis.');
+  } catch (error) {
+    console.error('Redis initialization failed:', error);
+    process.exit(1);
+  }
+};
+
+const startServer = async () => {
+  await initializeDatabase();
+  await initializeRedis();
   app.listen(port, () => {
     console.log(`Backend listening on port ${port}`);
   });
-});
+};
+
+startServer();
 
 
